@@ -1,0 +1,50 @@
+﻿@model SupportTicketSystem.Models.ProfileViewModel
+
+<h2>Profile Page</h2>
+
+<div class="ProfileDetails">
+    <h5> Your details:</h5>
+
+    <br/>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <p><strong>Role:</strong> Admin</p>
+        <p><small><bold>Message:</bold>You can only view <u>your own</u> tickets in the profile section</small></p>
+    }
+    else
+    {
+        <p><strong>Role:</strong> User</p>
+    }
+    <p><strong>Email:</strong> @Model.Email</p>
+</div>
+
+
+
+
+<h2>Your Tickets</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Creation Date</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ticket in Model.Tickets)
+        {
+            <tr>
+                <td>@ticket.Title</td>
+                <td>@ticket.Description</td>
+                <td>@ticket.CreationDate</td>
+                <td>@ticket.Priority</td>
+                <td>@ticket.Status</td>
+            </tr>
+        }
+    </tbody>
+</table>
