@@ -23,7 +23,7 @@ namespace SupportTicketSystem.Controllers
             _context = context;
         }
 
-        [Authorize(Roles = "Admin, User")]
+        
         public async Task<IActionResult> Index()
         {
             var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier); 
@@ -41,7 +41,7 @@ namespace SupportTicketSystem.Controllers
         }
 
 
-        [Authorize(Roles = "Admin, User")]
+        
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -62,7 +62,7 @@ namespace SupportTicketSystem.Controllers
         }
 
 
-        [Authorize(Roles = "Admin, User")]
+        
         public IActionResult Create()
         {
             // Get the ID of the currently logged in user
@@ -73,12 +73,12 @@ namespace SupportTicketSystem.Controllers
         }
 
 
-        [Authorize(Roles = "Admin, User")]
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Title,Description,CreationDate,Priority,Status,UserId")] Ticket ticket)
         {
-            // Set the creation date to the current date
+            // NOTE: we do need all the fields to be entered otherwise we wont process, and we will stay on the Create Screen.
             if (ModelState.IsValid)
             {
                 _context.Add(ticket);
@@ -90,7 +90,7 @@ namespace SupportTicketSystem.Controllers
         }
 
 
-        [Authorize(Roles = "Admin, User")]
+        
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -113,7 +113,7 @@ namespace SupportTicketSystem.Controllers
         }
 
 
-        [Authorize(Roles = "Admin, User")]
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         // The Bind attribute is used to prevent overposting.
@@ -165,7 +165,7 @@ namespace SupportTicketSystem.Controllers
         }
 
 
-        [Authorize(Roles = "Admin, User")]
+        
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -192,7 +192,6 @@ namespace SupportTicketSystem.Controllers
 
 
         [HttpPost, ActionName("Delete")]
-        [Authorize(Roles = "Admin, User")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id) 
         {
@@ -222,7 +221,6 @@ namespace SupportTicketSystem.Controllers
         {
             return _context.Ticket.Any(e => e.ID == id);
         }
-        [Authorize(Roles = "Admin, User")]
         public IActionResult Filter()
         {
             return View();
@@ -231,7 +229,6 @@ namespace SupportTicketSystem.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, User")]
         public IActionResult Filter(FilterViewModel model)
         {
             

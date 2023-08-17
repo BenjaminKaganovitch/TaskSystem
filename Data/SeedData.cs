@@ -48,6 +48,7 @@ namespace SupportTicketSystem.Data
             {
                 UserName = "admin@example.com",
                 Email = "admin@example.com",
+                Id = "4617f0f0-96ed-430d-be32-7ceb21e80e34"
             };
 
             var adminResult = await userManager.CreateAsync(admin, "Admin123!"); // Replace with your desired password
@@ -61,6 +62,7 @@ namespace SupportTicketSystem.Data
             {
                 UserName = "user@example.com",
                 Email = "user@example.com",
+                Id = "338a9760-8fae-4dc3-99a6-ece137050248",
             };
 
             var userResult = await userManager.CreateAsync(user, "User123!"); // Replace with your desired password
@@ -82,7 +84,7 @@ namespace SupportTicketSystem.Data
                     CreationDate = DateTime.Now,
                     Priority = "High",
                     Status = "Open",
-                    UserId = "admin@example.com", // Replace with the admin user's email
+                    UserId = "4617f0f0-96ed-430d-be32-7ceb21e80e34",
                 };
 
                 var myticket1 = new Ticket
@@ -92,7 +94,7 @@ namespace SupportTicketSystem.Data
                     CreationDate = DateTime.Now,
                     Priority = "High",
                     Status = "Open",
-                    UserId = "user@example.com", // Replace with the regular user's email
+                    UserId = "338a9760-8fae-4dc3-99a6-ece137050248",
                 };
 
                 var myticket2 = new Ticket
@@ -102,7 +104,7 @@ namespace SupportTicketSystem.Data
                     CreationDate = DateTime.Now,
                     Priority = "Low",
                     Status = "Open",
-                    UserId = "admin@example.com", // Replace with the admin user's email
+                    UserId = "4617f0f0-96ed-430d-be32-7ceb21e80e34", 
                 };
 
                 // Add the ticket objects to the context

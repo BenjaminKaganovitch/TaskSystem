@@ -38,7 +38,7 @@ namespace SupportTicketSystem.Controllers
 
 
 
-        // Allow unauthenticated users to access the Login action
+        // Allow unauthenticated users to access the Login action  
         [AllowAnonymous]
         [HttpGet]
         public IActionResult Register()
