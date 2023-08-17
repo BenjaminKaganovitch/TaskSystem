@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace SupportTicketSystem.Models;
@@ -25,7 +29,11 @@ public class Ticket
 
     public string UserId { get; set; }
 
-    // This may need to be deleted?
-    // public virtual ApplicationUser ApplicationUser { get; set; }
+    
+
+    [ValidateNever]
+    public virtual ApplicationUser ApplicationUser { get; set; }
+
+   
 }
 

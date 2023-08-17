@@ -72,8 +72,6 @@ namespace SupportTicketSystem.Controllers
             return View(new CreateTicketViewModel() { UserId = loggedInUserId });
         }
 
-
-        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Title,Description,CreationDate,Priority,Status,UserId")] Ticket ticket)
