@@ -24,5 +24,8 @@ public class Ticket
     public string Status { get; set; }
 
     public string UserId { get; set; }
+
+    // This may need to be deleted?
+    // public virtual ApplicationUser ApplicationUser { get; set; }
 }
 

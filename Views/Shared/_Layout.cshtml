@@ -37,8 +37,9 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Profile">Profile</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Profile">Profile: @User.Identity.Name</a>
                         </li>
+
 
                         <li>
                             <a class="nav-link text-dark" asp-area="" asp-controller="Ticket" asp-action="Index">Manage Tickets</a>
@@ -46,6 +47,10 @@
 
                         <li>
                             <a class="nav-link text-dark" asp-area="" asp-controller="Ticket" asp-action="Filter">Filter Tickets</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
                         </li>
 
                         

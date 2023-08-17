@@ -25,8 +25,5 @@ namespace SupportTicketSystem.Models
             [Display(Name = "User Role")]
             public string UserRole { get; set; } 
         }
-
-
-
     }
 }

@@ -13,6 +13,7 @@ using SupportTicketSystem.Models;
 
 namespace SupportTicketSystem.Controllers
 {
+    [Authorize(Roles = "Admin, User")]
     public class TicketController : Controller
     {
         private readonly SupportTicketSystemContext _context;
@@ -68,7 +69,7 @@ namespace SupportTicketSystem.Controllers
             var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier); 
 
             // Pass the ID of the currently logged in user to the view
-            return View(new CreateTicketViewModel() {UserId = loggedInUserId });
+            return View(new CreateTicketViewModel() { UserId = loggedInUserId });
         }
 
 
@@ -84,7 +85,8 @@ namespace SupportTicketSystem.Controllers
                 await _context.SaveChangesAsync(); 
                 return RedirectToAction(nameof(Index));
             }
-            return View(ticket);
+            var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return View(new CreateTicketViewModel() { UserId = loggedInUserId });
         }
 
 
@@ -102,6 +104,11 @@ namespace SupportTicketSystem.Controllers
                 return NotFound();
             }
 
+            var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!User.IsInRole("Admin") && ticket.UserId != loggedInUserId)
+            {
+                return RedirectToAction(nameof(Index));
+            }
             return View(ticket);
         }
 
@@ -110,7 +117,7 @@ namespace SupportTicketSystem.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         // The Bind attribute is used to prevent overposting.
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Title,Description,CreationDate,Priority,Status")] Ticket ticket) 
+        public async Task<IActionResult> Edit(int id, [Bind("UserId,ID,Title,Description,CreationDate,Priority,Status")] Ticket ticket) 
         {
             // The id parameter is used to check if the ticket exists in the database
             if (id != ticket.ID)
@@ -118,7 +125,20 @@ namespace SupportTicketSystem.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!User.IsInRole("Admin") && ticket.UserId != loggedInUserId)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Explain the code below? 
+            // The ModelState.IsValid property is used to check if the ticket is valid.
+            // If the ticket is valid, the ticket is updated in the database and the user is redirected to the index view.
+            // If the ticket is not valid, the user is returned to the edit view.
+            // This for some reason returns false when clicking the edit button, there by skipping over everything underneath
+
+
+            if (ModelState.IsValid) 
             {
                 try
                 {
@@ -161,6 +181,12 @@ namespace SupportTicketSystem.Controllers
                 return NotFound();
             }
 
+            var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!User.IsInRole("Admin") && ticket.UserId != loggedInUserId)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             return View(ticket);
         }
 
@@ -172,10 +198,20 @@ namespace SupportTicketSystem.Controllers
         {
             // Find the ticket with the specified ID
             var ticket = await _context.Ticket.FindAsync(id);
-            if (ticket != null)
+            // Fix the green swiggly line, to ensure that the ticket is not null, to prevent a cross-site request forgery attack
+            if (ticket == null)
             {
-                _context.Ticket.Remove(ticket);
+                return NotFound();
             }
+            var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!User.IsInRole("Admin") && ticket.UserId != loggedInUserId)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            _context.Ticket.Remove(ticket);
+
+
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

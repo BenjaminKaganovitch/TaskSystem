@@ -253,7 +253,7 @@ namespace SupportTicketSystem.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Ticket");
+                    b.ToTable("Ticket", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

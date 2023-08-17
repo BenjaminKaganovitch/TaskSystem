@@ -27,6 +27,17 @@ namespace SupportTicketSystem.Controllers
             _context = context; 
         }
 
+
+        
+        [AllowAnonymous]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+
+
+
         // Allow unauthenticated users to access the Login action
         [AllowAnonymous]
         [HttpGet]
@@ -56,6 +67,9 @@ namespace SupportTicketSystem.Controllers
                     {
                         await _userManager.AddToRoleAsync(user, "User");
                     }
+               
+
+
 
                     user.Email = model.Email;
                     user.EmailConfirmed = true;

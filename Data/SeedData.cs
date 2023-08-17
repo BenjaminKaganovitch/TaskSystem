@@ -6,12 +6,11 @@ using System;
 using static SupportTicketSystem.Models.Ticket;
 using Microsoft.Identity.Client;
 using Microsoft.EntityFrameworkCore;
-
 namespace SupportTicketSystem.Data
 {
     internal class SeedData
     {
-
+        // Connect the methods: SeedTickets, SeedUsers, SeedTables to the initlize method here 
         internal static void Initialize(IServiceProvider serviceProvider)
         {
             // Check to see if the roles exist and create them if not
@@ -20,6 +19,15 @@ namespace SupportTicketSystem.Data
 
             using var context = new SupportTicketSystemContext(
                                serviceProvider.GetRequiredService<DbContextOptions<SupportTicketSystemContext>>());
+
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            SeedRoles(roleManager);
+
+            _ = SeedUsers(userManager);
+
+            SeedTickets(context);
+
+            
         }
 
         private static void SeedRoles(RoleManager<IdentityRole> roleManager)
@@ -33,63 +41,78 @@ namespace SupportTicketSystem.Data
                 _ = roleManager.CreateAsync(new IdentityRole("User")).Result;
         }
 
-        private static void SeedUsers(UserManager<RegisterViewModel> userManager)
+        private static async Task SeedUsers(UserManager<ApplicationUser> userManager)
         {
-            var admin = new RegisterViewModel
+            // Create an admin user
+            var admin = new ApplicationUser
             {
-                UserRole = "Admin",
-                Email = "ben@gmail.com",
-                Password = "123qwe#E",
+                UserName = "admin@example.com",
+                Email = "admin@example.com",
             };
 
-            var user = new RegisterViewModel
+            var adminResult = await userManager.CreateAsync(admin, "Admin123!"); // Replace with your desired password
+            if (adminResult.Succeeded)
             {
-                UserRole = "User",
-                Email = "Jerry@gmail.com",
-                Password = "123qwe#D",
-            };
-        }
+                await userManager.AddToRoleAsync(admin, "Admin");
+            }
 
-        private static void SeedTables(SupportTicketSystemContext context)
-        {
-            // Check to see if the tables are empty and add data if so
-            if (!context.Ticket.Any())
+            // Create a regular user
+            var user = new ApplicationUser
             {
-                SeedTickets(context);
+                UserName = "user@example.com",
+                Email = "user@example.com",
+            };
+
+            var userResult = await userManager.CreateAsync(user, "User123!"); // Replace with your desired password
+            if (userResult.Succeeded)
+            {
+                await userManager.AddToRoleAsync(user, "User");
             }
         }
 
+
         private static void SeedTickets(SupportTicketSystemContext context)
         {
-            var myticket = new Ticket
+            if (!context.Ticket.Any()) // Note its "Ticket" instead of "Tickets"
             {
-                Title = "Finish ML Playlist",
-                Description = "Just watch it",
-                CreationDate = DateTime.Now,
-                Priority = "High",
-                Status = "Open",
-            };
+                var myticket = new Ticket
+                {
+                    Title = "Finish ML Playlist",
+                    Description = "Just watch it",
+                    CreationDate = DateTime.Now,
+                    Priority = "High",
+                    Status = "Open",
+                    UserId = "admin@example.com", // Replace with the admin user's email
+                };
 
-            var myticket1 = new Ticket
-            {
-                Title = "Ask Chris why I got fired",
-                Description = "Send email",
-                CreationDate = DateTime.Now,
-                Priority = "High",
-                Status = "Open",
-            };
+                var myticket1 = new Ticket
+                {
+                    Title = "Ask Chris why I got fired",
+                    Description = "Send email",
+                    CreationDate = DateTime.Now,
+                    Priority = "High",
+                    Status = "Open",
+                    UserId = "user@example.com", // Replace with the regular user's email
+                };
 
-            var myticket2 = new Ticket
-            {
-                Title = "Fail Xander",
-                Description = "delete the code from his laptop",
-                CreationDate = DateTime.Now,
-                Priority = "Low",
-                Status = "Open",
-            };
+                var myticket2 = new Ticket
+                {
+                    Title = "Fail Xander",
+                    Description = "delete the code from his laptop",
+                    CreationDate = DateTime.Now,
+                    Priority = "Low",
+                    Status = "Open",
+                    UserId = "admin@example.com", // Replace with the admin user's email
+                };
 
+                // Add the ticket objects to the context
+                context.Ticket.Add(myticket);
+                context.Ticket.Add(myticket1);
+                context.Ticket.Add(myticket2);
 
-            throw new NotImplementedException();
+                context.SaveChanges(); // Save changes to the database
+            }
         }
+
     }
 }

@@ -25,6 +25,18 @@ namespace SupportTicketSystem.Data
         public DbSet<IdentityUserToken<string>> UserTokens { get; set; }
         public DbSet<IdentityRoleClaim<string>> RoleClaims { get; set; }
 
+        // I need to introduce a foreign key relationship between the Ticket and ApplicationUser tables?
+        // the Ticket table has a UserId column that referennces the Id column in the ApplicationUser table.
+       
+        //override protected void OnModelCreating(ModelBuilder modelBuilder)
+        //{ 
+        //    base.OnModelCreating(modelBuilder);
+        //    modelBuilder.Entity<Ticket>()
+        //        .HasOne(t => t.ApplicationUser) // Each Ticket has one ApplicationUserEmail
+        //        .WithMany(g => g.Tickets)
+        //        .HasForeignKey(s => s.ApplicationUserEmail).HasPrincipalKey(u=>u.Email);
+        //}
+
     }
 }
 
