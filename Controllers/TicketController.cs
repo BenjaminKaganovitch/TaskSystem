@@ -23,13 +23,13 @@ namespace SupportTicketSystem.Controllers
             _context = context;
         }
 
-        
         public async Task<IActionResult> Index()
         {
             var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier); 
 
             // Find all tickets that belong to the currently logged in user
             var userTickets = await _context.Ticket.Where(t => t.UserId == loggedInUserId).ToListAsync();
+
 
             if (User.IsInRole("Admin"))
             {
@@ -40,8 +40,6 @@ namespace SupportTicketSystem.Controllers
             return View(userTickets);
         }
 
-
-        
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -53,6 +51,7 @@ namespace SupportTicketSystem.Controllers
             var ticket = await _context.Ticket
                 .FirstOrDefaultAsync(m => m.ID == id);
 
+
             if (ticket == null)
             {
                 return NotFound();
@@ -61,20 +60,18 @@ namespace SupportTicketSystem.Controllers
             return View(ticket);
         }
 
-
-        
         public IActionResult Create()
         {
             // Get the ID of the currently logged in user
             var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier); 
+            ViewBag.UserId = loggedInUserId;
 
-            // Pass the ID of the currently logged in user to the view
-            return View(new CreateTicketViewModel() { UserId = loggedInUserId });
+            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Title,Description,CreationDate,Priority,Status,UserId")] Ticket ticket)
+        public async Task<IActionResult> Create([Bind("Title,Description,CreationDate,Priority,Status,UserId")] Ticket ticket)
         {
             // NOTE: we do need all the fields to be entered otherwise we wont process, and we will stay on the Create Screen.
             if (ModelState.IsValid)
@@ -87,8 +84,6 @@ namespace SupportTicketSystem.Controllers
             return View(new CreateTicketViewModel() { UserId = loggedInUserId });
         }
 
-
-        
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -104,17 +99,17 @@ namespace SupportTicketSystem.Controllers
 
             var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (!User.IsInRole("Admin") && ticket.UserId != loggedInUserId)
+
             {
                 return RedirectToAction(nameof(Index));
             }
+
             return View(ticket);
         }
 
 
-       
         [HttpPost]
         [ValidateAntiForgeryToken]
-        // The Bind attribute is used to prevent overposting.
         public async Task<IActionResult> Edit(int id, [Bind("UserId,ID,Title,Description,CreationDate,Priority,Status")] Ticket ticket) 
         {
             // The id parameter is used to check if the ticket exists in the database
@@ -128,13 +123,6 @@ namespace SupportTicketSystem.Controllers
             {
                 return RedirectToAction(nameof(Index));
             }
-
-            // Explain the code below? 
-            // The ModelState.IsValid property is used to check if the ticket is valid.
-            // If the ticket is valid, the ticket is updated in the database and the user is redirected to the index view.
-            // If the ticket is not valid, the user is returned to the edit view.
-            // This for some reason returns false when clicking the edit button, there by skipping over everything underneath
-
 
             if (ModelState.IsValid) 
             {
@@ -162,18 +150,17 @@ namespace SupportTicketSystem.Controllers
             return View(ticket);
         }
 
-
-        
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
             // Find the ticket with the specified ID. The Include method is used to include the user that created the ticket
             var ticket = await _context.Ticket
                 .FirstOrDefaultAsync(m => m.ID == id);
+
+
             if (ticket == null)
             {
                 return NotFound();
@@ -214,16 +201,16 @@ namespace SupportTicketSystem.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
         private bool TicketExists(int id)
         {
             return _context.Ticket.Any(e => e.ID == id);
+
         }
+
         public IActionResult Filter()
         {
             return View();
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -243,6 +230,7 @@ namespace SupportTicketSystem.Controllers
             {
                 // If the user is not an admin, only show tickets that belong to the currently logged in user
                 filteredTickets = filteredTickets.Where(t => t.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier));
+
             }
 
             
@@ -253,13 +241,12 @@ namespace SupportTicketSystem.Controllers
                 {
                     // Filter the tickets based on the selected filter properties
                     filteredTickets = filteredTickets.Where(t => t.GetType().GetProperty(filter.PropertyName)!.GetValue(t, null)!.ToString() == filter.PropertyValue);
+
                 }
             }
 
             var filteredTicketList = filteredTickets.ToList();
             return View("Index", filteredTicketList);
         }
-
     }
-
 }

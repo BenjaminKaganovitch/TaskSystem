@@ -25,23 +25,21 @@ namespace SupportTicketSystem.Data
         public DbSet<IdentityUserToken<string>> UserTokens { get; set; }
         public DbSet<IdentityRoleClaim<string>> RoleClaims { get; set; }
 
-       
 
-        // Use OnModelCreating to tell entity framework to implement the forign key relationship between the ApplicationUser and Ticket tables
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // We told entity framework to implement the forign key relationship between the ApplicationUser and Ticket tables
+            // This method is called when the model for a derived context has been initialized, but before the model has been locked down and used to initialize the context.
             base.OnModelCreating(modelBuilder);
 
+            // The code below is used to create a composite key for the Ticket table. The composite key is made up of the TicketId and UserId properties.
             modelBuilder.Entity<Ticket>()
                 .HasOne<ApplicationUser>(t => t.ApplicationUser)
                 .WithMany(u => u.Tickets)
                 .HasForeignKey(t => t.UserId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
+
         }
-
-
     }
 }
 

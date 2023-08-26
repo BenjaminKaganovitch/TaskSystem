@@ -10,7 +10,6 @@ namespace SupportTicketSystem.Controllers
 {
     public class AccountController : Controller
     {
-       
         private readonly UserManager<ApplicationUser> _userManager;
        
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -26,8 +25,6 @@ namespace SupportTicketSystem.Controllers
             
             _context = context; 
         }
-
-
         
         [AllowAnonymous]
         public async Task<IActionResult> Logout()
@@ -35,8 +32,6 @@ namespace SupportTicketSystem.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
-
-
 
         // Allow unauthenticated users to access the Login action  
         [AllowAnonymous]
@@ -98,7 +93,6 @@ namespace SupportTicketSystem.Controllers
             return View();
         }
 
-  
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
@@ -119,7 +113,6 @@ namespace SupportTicketSystem.Controllers
             return View(model);
         }
 
-
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Profile()
@@ -130,6 +123,7 @@ namespace SupportTicketSystem.Controllers
             var tickets = _context.Ticket.Where(t => t.UserId == user.Id)
                                          .Select(t => new UserTicketViewModel
                                          {
+                                             
                                              // Map the Ticket object to a UserTicketViewModel object
                                              // Execute the query and return the results as a list
                                              ID = t.ID,
@@ -141,6 +135,7 @@ namespace SupportTicketSystem.Controllers
                                          })
                                          .ToList(); 
 
+
             // Create a ProfileViewModel object and pass it to the view
             var profileViewModel = new ProfileViewModel
             {
@@ -151,14 +146,12 @@ namespace SupportTicketSystem.Controllers
             return View(profileViewModel);
         }
 
-
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public IActionResult AdminDashboard()
         {
             return View();
         }
-
 
         [HttpGet]
         [AllowAnonymous]

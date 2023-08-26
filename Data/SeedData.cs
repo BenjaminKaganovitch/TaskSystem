@@ -8,6 +8,7 @@ using Microsoft.Identity.Client;
 using Microsoft.EntityFrameworkCore;
 namespace SupportTicketSystem.Data
 {
+
     internal class SeedData
     {
         // Connect the methods: SeedTickets, SeedUsers, SeedTables to the initlize method here 
@@ -26,8 +27,6 @@ namespace SupportTicketSystem.Data
             _ = SeedUsers(userManager);
 
             SeedTickets(context);
-
-            
         }
 
         private static void SeedRoles(RoleManager<IdentityRole> roleManager)
@@ -51,7 +50,7 @@ namespace SupportTicketSystem.Data
                 Id = "4617f0f0-96ed-430d-be32-7ceb21e80e34"
             };
 
-            var adminResult = await userManager.CreateAsync(admin, "Admin123!"); // Replace with your desired password
+            var adminResult = await userManager.CreateAsync(admin, "Admin123!"); 
             if (adminResult.Succeeded)
             {
                 await userManager.AddToRoleAsync(admin, "Admin");
@@ -65,22 +64,21 @@ namespace SupportTicketSystem.Data
                 Id = "338a9760-8fae-4dc3-99a6-ece137050248",
             };
 
-            var userResult = await userManager.CreateAsync(user, "User123!"); // Replace with your desired password
+            var userResult = await userManager.CreateAsync(user, "User123!"); 
             if (userResult.Succeeded)
             {
                 await userManager.AddToRoleAsync(user, "User");
             }
         }
 
-
         private static void SeedTickets(SupportTicketSystemContext context)
         {
-            if (!context.Ticket.Any()) // Note its "Ticket" instead of "Tickets"
+            if (!context.Ticket.Any())
             {
                 var myticket = new Ticket
                 {
-                    Title = "Finish ML Playlist",
-                    Description = "Just watch it",
+                    Title = "Explore User Edit Filter",
+                    Description = "Click Filter in create",
                     CreationDate = DateTime.Now,
                     Priority = "High",
                     Status = "Open",
@@ -89,17 +87,17 @@ namespace SupportTicketSystem.Data
 
                 var myticket1 = new Ticket
                 {
-                    Title = "Ask Chris why I got fired",
-                    Description = "Send email",
+                    Title = "Explore User Profile Section",
+                    Description = "Click Profile Page",
                     CreationDate = DateTime.Now,
                     Priority = "High",
                     Status = "Open",
-                    UserId = "338a9760-8fae-4dc3-99a6-ece137050248",
+                    UserId = "4617f0f0-96ed-430d-be32-7ceb21e80e34",
                 };
 
                 var myticket2 = new Ticket
                 {
-                    Title = "Fail Xander",
+                    Title = "Explore create ticket feature",
                     Description = "delete the code from his laptop",
                     CreationDate = DateTime.Now,
                     Priority = "Low",

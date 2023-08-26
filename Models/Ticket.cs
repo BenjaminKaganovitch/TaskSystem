@@ -29,8 +29,6 @@ public class Ticket
 
     public string UserId { get; set; }
 
-    
-
     [ValidateNever]
     public virtual ApplicationUser ApplicationUser { get; set; }
 
